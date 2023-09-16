@@ -5,12 +5,18 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 interface FetchAppBarProps {
+  title: string;
   drawerWidth: number;
   handleDrawerToggle: () => void,
 }
 
 export default function FetchAppBar(props: FetchAppBarProps) {
-  const { drawerWidth, handleDrawerToggle } = props;
+  const {
+    drawerWidth,
+    handleDrawerToggle,
+    title,
+  } = props;
+
   return (
     <AppBar
       position="fixed"
@@ -30,8 +36,7 @@ export default function FetchAppBar(props: FetchAppBarProps) {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          {/* TODO: Use a String Factory */}
-          Responsive drawer
+          { title }
         </Typography>
       </Toolbar>
     </AppBar>
