@@ -1,31 +1,23 @@
-import DogCardList from '../components/DogCardList';
-import FetchLayout from '../components/layout/FetchLayout';
-import SearchForm from '../components/SearchForm';
-import type { SearchInputs } from '../components/SearchForm';
-import * as LoggingService from '../services/logging-service';
-import { LogLevel } from '../services/logging-service';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Outlet } from 'react-router-dom';
+
+const themeConfig = {
+  palette: {
+    primary: {
+      main: '#732384',
+    },
+    secondary: {
+      main: '#fba91a',
+    },
+  },
+};
 
 export default function Root() {
-  const breeds = [
-    'Chihuahua',
-    'Labrador',
-  ];
-
-  const pageTitle = 'Fetch Dog Search';
-
-  const handleSearch = (searchParams: SearchInputs) => {
-    LoggingService.log(LogLevel.Debug, 'handleSearch', searchParams);
-  };
-
-  const onMatch = () => {
-    LoggingService.log(LogLevel.Debug, 'onMatch');
-  };
+  const theme = createTheme(themeConfig);
 
   return (
-    <FetchLayout
-      title={pageTitle}
-      drawer={<SearchForm breeds={breeds} onMatch={onMatch} onSearch={handleSearch} />}
-      content={<DogCardList />}
-    />
+    <ThemeProvider theme={theme}>
+      <Outlet />
+    </ThemeProvider>
   );
 }

@@ -6,10 +6,12 @@ export interface FetchTextFieldProps {
   label: string;
   onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   value: unknown;
+  disabled?: boolean;
 }
 
 export default function FetchTextField(props: FetchTextFieldProps) {
   const {
+    disabled,
     id,
     label,
     onChange,
@@ -25,6 +27,7 @@ export default function FetchTextField(props: FetchTextFieldProps) {
         onChange={onChange}
         variant="outlined"
         size="small"
+        disabled={disabled}
       />
     </FormControl>
   );

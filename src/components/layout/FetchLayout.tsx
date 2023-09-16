@@ -3,8 +3,9 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Divider from '@mui/material/Divider';
 import FetchAppBar from './FetchAppBar';
 import FetchLogo from './FetchLogo';
 
@@ -22,16 +23,7 @@ export default function FetchLayout(props: LayoutProps) {
     drawer,
     title,
   } = props;
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#732384',
-      },
-      secondary: {
-        main: '#fba91a',
-      },
-    },
-  });
+  const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -40,46 +32,46 @@ export default function FetchLayout(props: LayoutProps) {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <FetchAppBar
-          title={title}
-          drawerWidth={drawerWidth}
-          handleDrawerToggle={handleDrawerToggle}
-        />
-        <Box
-          component="nav"
-          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-          aria-label="mailbox folders"
-        >
-          <Drawer
-            variant={isMobile ? 'temporary' : 'permanent'}
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-            sx={{
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-            }}
-          >
-            <FetchLogo />
-            {drawer}
-          </Drawer>
-        </Box>
-        <Box
-          component="main"
+
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <FetchAppBar
+        title={title}
+        drawerWidth={drawerWidth}
+        handleDrawerToggle={handleDrawerToggle}
+      />
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
+      >
+        <Drawer
+          variant={isMobile ? 'temporary' : 'permanent'}
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
           sx={{
-            flexGrow: 1,
-            p: 3,
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
-          <Toolbar />
-          {content}
-        </Box>
+          <FetchLogo />
+          <Divider />
+          {drawer}
+        </Drawer>
       </Box>
-    </ThemeProvider>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Toolbar />
+        {content}
+      </Box>
+    </Box>
   );
 }
