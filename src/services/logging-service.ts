@@ -24,7 +24,7 @@ const debugMode = import.meta.env.VITE_DEBUG_MODE === 'true';
 export const log = (level: LogLevel, message?: any, ...optionalParams: any[]) => {
   if (debugMode) {
     // eslint-disable-next-line no-console
-    console.log(message, optionalParams);
+    console.log(message, ...optionalParams);
   }
 
   switch (appStage) {
@@ -44,5 +44,5 @@ export const log = (level: LogLevel, message?: any, ...optionalParams: any[]) =>
   }
 
   // eslint-disable-next-line no-console
-  console.log(message, optionalParams);
+  console.log(message, ...optionalParams);
 };

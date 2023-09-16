@@ -1,5 +1,5 @@
 import DogCardList from '../components/DogCardList';
-import Layout from '../components/Layout';
+import FetchLayout from '../components/layout/FetchLayout';
 import SearchForm from '../components/SearchForm';
 import type { SearchInputs } from '../components/SearchForm';
 import * as LoggingService from '../services/logging-service';
@@ -22,7 +22,7 @@ export default function Root() {
   };
 
   return (
-    <Layout
+    <FetchLayout
       title={pageTitle}
       drawer={<SearchForm breeds={breeds} onMatch={onMatch} onSearch={handleSearch} />}
       content={<DogCardList />}

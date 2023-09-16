@@ -16,7 +16,7 @@ interface LayoutProps {
   content: JSX.Element;
 }
 
-export default function Layout(props: LayoutProps) {
+export default function FetchLayout(props: LayoutProps) {
   const {
     content,
     drawer,

@@ -1,5 +1,5 @@
 import Toolbar from '@mui/material/Toolbar';
-import fetchLogoSvg from '../assets/fetch-logo.svg';
+import fetchLogoSvg from '../../assets/fetch-logo.svg';
 
 export default function FetchLogo() {
   return (

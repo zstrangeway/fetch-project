@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import FetchTextField from './FetchTextField';
-import FetchSelect from './FetchSelect';
-import FetchMultiSelect from './FetchMultiSelect';
+import FetchTextField from './inputs/FetchTextField';
+import FetchSelect from './inputs/FetchSelect';
+import FetchMultiSelect from './inputs/FetchMultiSelect';
 
 export interface SearchInputs {
   breeds?: string[];
