@@ -1,7 +1,6 @@
 import axios from 'axios';
 import * as LoggingService from './logging-service';
 import { LogLevel } from './logging-service';
-import { SearchInputs } from '../components/SearchForm';
 
 const BASE_URL = import.meta.env.VITE_APP_API_URL;
 const SERVICE_NAME = 'FetchApiService';
@@ -44,6 +43,16 @@ export const listDogBreeds = async (): Promise<string[]> => {
   }
 };
 
+export interface SearchParams {
+  breeds?: string[];
+  zipCodes?: string[];
+  ageMin?: string;
+  ageMax?: string;
+  sort?: string;
+  page?: string;
+  size?: number;
+}
+
 interface SearchDogsResponse {
   next: string;
   resultIds: string[];
@@ -59,7 +68,8 @@ interface Dog {
   breed: string
 }
 
-export const searchDogs = async (params?: SearchInputs): Promise<SearchDogsResponse> => {
+export const searchDogs = async (params?: SearchParams): Promise<SearchDogsResponse> => {
+  console.log('params', params)
   try {
     const response = await httpClient.get<SearchDogsResponse>('/dogs/search', { params });
     return response.data;

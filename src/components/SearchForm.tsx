@@ -9,11 +9,12 @@ import FetchMultiSelect from './inputs/FetchMultiSelect';
 export interface SearchInputs {
   breeds?: string[];
   zipCode?: string;
+  distance?: string;
   ageMin?: string;
   ageMax?: string;
-  sortBy?: 'asc' | 'desc';
-  page?: string;
-  size?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  size?: number;
 }
 
 export interface SearchFormProps {
@@ -30,6 +31,16 @@ const DISTANCE_OPTIONS = [
   { label: '25', value: '25' },
   { label: '50', value: '50' },
   { label: '100', value: '100' },
+];
+const SORT_FIELD_OPTIONS = [
+  { label: 'Breed', value: 'breed' },
+  { label: 'Age', value: 'age' },
+  { label: 'Name', value: 'name' },
+];
+const PAGE_SIZE_OPTIONS = [
+  { label: '25', value: 25 },
+  { label: '50', value: 50 },
+  { label: '100', value: 100 },
 ];
 const SORT_ORDER_OPTIONS = [
   { label: 'Ascending', value: 'asc' },
@@ -49,7 +60,9 @@ export default function SearchForm(props: SearchFormProps) {
   const [ageMax, setAgeMax] = useState<string>('');
   const [zipCode, setZipCode] = useState<string>('');
   const [distance, setDistance] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<string>('');
+  const [pageSize, setPageSize] = useState<number>(25);
 
   const breedOptions = breeds.map((breed) => ({ label: breed, value: breed }));
 
@@ -57,8 +70,12 @@ export default function SearchForm(props: SearchFormProps) {
     const searchInputs: SearchInputs = {
       breeds: selectedBreeds,
       zipCode,
+      distance,
       ageMin,
       ageMax,
+      sortBy,
+      sortOrder,
+      size: pageSize,
     };
 
     onSearch(searchInputs);
@@ -71,6 +88,8 @@ export default function SearchForm(props: SearchFormProps) {
     setZipCode('');
     setDistance('');
     setSortOrder('');
+    setSortBy('');
+    setPageSize(25);
   };
 
   return (
@@ -89,23 +108,7 @@ export default function SearchForm(props: SearchFormProps) {
             value={selectedBreeds}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <FetchTextField
-            id="zip-code"
-            label="Zip Code"
-            onChange={(e) => setZipCode(e.target.value)}
-            value={zipCode}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FetchSelect
-            id="distance"
-            label="Distance"
-            onChange={(e) => setDistance(e.target.value as string)}
-            value={distance}
-            options={DISTANCE_OPTIONS}
-          />
-        </Grid>
+
         <Grid item xs={12} sm={6}>
           <FetchTextField
             id="min-age"
@@ -122,7 +125,35 @@ export default function SearchForm(props: SearchFormProps) {
             value={ageMax}
           />
         </Grid>
-        <Grid item xs={12}>
+
+        {/* <Grid item xs={12} sm={6}>
+          <FetchTextField
+            id="zip-code"
+            label="Zip Code"
+            onChange={(e) => setZipCode(e.target.value)}
+            value={zipCode}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FetchSelect
+            id="distance"
+            label="Distance"
+            onChange={(e) => setDistance(e.target.value as string)}
+            value={distance}
+            options={DISTANCE_OPTIONS}
+          />
+        </Grid> */}
+
+        <Grid item xs={6}>
+          <FetchSelect
+            id="sort-field"
+            label="Sort Field"
+            onChange={(e) => setSortBy(e.target.value as string)}
+            value={sortBy}
+            options={SORT_FIELD_OPTIONS}
+          />
+        </Grid>
+        <Grid item xs={6}>
           <FetchSelect
             id="sort-order"
             label="Sort Order"
@@ -131,6 +162,17 @@ export default function SearchForm(props: SearchFormProps) {
             options={SORT_ORDER_OPTIONS}
           />
         </Grid>
+
+        <Grid item xs={12}>
+          <FetchSelect
+            id="page-size"
+            label="Page Size"
+            onChange={(e) => setPageSize(e.target.value as number)}
+            value={pageSize}
+            options={PAGE_SIZE_OPTIONS}
+          />
+        </Grid>
+
         <Grid item xs={6}>
           <Button
             color="secondary"
@@ -151,7 +193,9 @@ export default function SearchForm(props: SearchFormProps) {
           </Button>
         </Grid>
       </Grid>
+
       <Divider />
+
       <Grid
         container
         direction="column"
@@ -171,7 +215,9 @@ export default function SearchForm(props: SearchFormProps) {
             Match
           </Button>
         </Grid>
+
         <Grid item flexGrow="1" />
+
         <Grid item>
           <Button
             color="secondary"

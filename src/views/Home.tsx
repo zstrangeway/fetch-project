@@ -11,6 +11,7 @@ import { LogLevel } from '../services/logging-service';
 import * as FetchApiService from '../services/fetch-api-service';
 import type { Dog } from '../types/Dog';
 import Login from '../components/Login';
+import { SearchParams } from '../services/fetch-api-service';
 
 export default function Root() {
   const pageTitle = 'Fetch Dog Search';
@@ -26,10 +27,10 @@ export default function Root() {
   const [breeds, setBreeds] = useState<string[]>([]);
   const [dogs, setDogs] = useState<Dog[]>([]);
 
-  const searchDogs = async (searchInputs: SearchInputs) => {
+  const searchDogs = async (searchParams: SearchParams) => {
     try {
       setDogListLoading(true);
-      const searchResult = await FetchApiService.searchDogs(searchInputs);
+      const searchResult = await FetchApiService.searchDogs(searchParams);
       const dogsData = await FetchApiService.getDogs(searchResult.resultIds);
       setDogs(dogsData);
     } catch (e) {
@@ -58,8 +59,37 @@ export default function Root() {
     }
   };
 
+  const getSearchParams = (searchInputs: SearchInputs): SearchParams => {
+    console.log('searchInputs', searchInputs);
+    
+    const searchParams: SearchParams = {};
+
+    if (searchInputs.breeds && searchInputs.breeds.length > 0) {
+      searchParams.breeds = searchInputs.breeds;
+    }
+
+    if (searchInputs.ageMin) {
+      searchParams.ageMin = searchInputs.ageMin;
+    }
+
+    if (searchInputs.ageMax) {
+      searchParams.ageMax = searchInputs.ageMax;
+    }
+
+    if (searchInputs.sortBy && searchInputs.sortOrder) {
+      searchParams.sort = `${searchInputs.sortBy}:${searchInputs.sortOrder}`;
+    }
+
+    if (searchInputs.size) {
+      searchParams.size = searchInputs.size;
+    }
+
+    return searchParams;
+  };
+
   const handleSearch = async (searchInputs: SearchInputs) => {
-    searchDogs(searchInputs);
+    const searchParams = getSearchParams(searchInputs);
+    searchDogs(searchParams);
   };
 
   const handleLogin = async (name: string, email: string) => {
@@ -137,6 +167,7 @@ export default function Root() {
           onMatch={handleMatch}
           onSearch={handleSearch}
           onLogout={handleLogout}
+          logoutLoading={logoutLoading}
         />
       )}
       content={<DogCardList dogs={dogs} loading={dogListLoading} />}
