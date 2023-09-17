@@ -92,7 +92,7 @@ export default function SearchForm(props: SearchFormProps) {
     setDistance(0);
     setSortOrder(SORT_ORDER_OPTIONS[0].value);
     setSortBy(SORT_BY_OPTIONS[0].value);
-    setPageSize(25);
+    setPageSize(PAGE_SIZE_OPTIONS[0].value);
   };
 
   return (

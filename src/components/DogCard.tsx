@@ -13,8 +13,8 @@ export default function DogCard(props: DogCardProps) {
     img, name, age, zip_code, breed,
   } = dog;
   return (
-    <Grid item xs={4}>
-      <Card sx={{ maxWidth: 345 }}>
+    <Grid item xs={12} sm={6} md={4}>
+      <Card>
         <CardMedia
           sx={{ height: 140 }}
           image={img}

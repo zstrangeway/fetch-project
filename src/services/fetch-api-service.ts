@@ -1,5 +1,4 @@
 import axios from 'axios';
-import qs from 'qs';
 import * as LoggingService from './logging-service';
 import { LogLevel } from './logging-service';
 
@@ -53,7 +52,7 @@ export interface SearchParams {
   ageMin?: string;
   ageMax?: string;
   sort?: string;
-  page?: string;
+  from?: number;
   size?: number;
 }
 
