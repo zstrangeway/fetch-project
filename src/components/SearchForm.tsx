@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import { Divider } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import FetchTextField from './inputs/FetchTextField';
 import FetchSelect from './inputs/FetchSelect';
 import FetchMultiSelect from './inputs/FetchMultiSelect';
@@ -23,6 +23,7 @@ export interface SearchFormProps {
   onLogout: () => void;
   onMatch: () => void;
   onSearch: (searchInputs: SearchInputs) => void;
+  totalResults: number;
 }
 
 const FORM_SPACING = 1;
@@ -55,6 +56,7 @@ export default function SearchForm(props: SearchFormProps) {
     onLogout,
     onMatch,
     onSearch,
+    totalResults,
   } = props;
   const [selectedBreeds, setSelectedBreeds] = useState<string[]>([]);
   const [ageMin, setAgeMin] = useState<string>('');
@@ -193,6 +195,12 @@ export default function SearchForm(props: SearchFormProps) {
             Search
           </Button>
         </Grid>
+
+        <Grid item xs={12}>
+          <Typography variant="body2" color="text.secondary">
+            {`Total Results: ${totalResults}`}
+          </Typography>
+        </Grid>
       </Grid>
 
       <Divider />
@@ -205,8 +213,11 @@ export default function SearchForm(props: SearchFormProps) {
         sx={{ p: FORM_SPACING, pt: FORM_SPACING * 2, pb: FORM_SPACING * 2 }}
       >
         <Grid item>
-          { `Selected Dogs: ${0}` }
+          <Typography variant="body1" color="text.secondary">
+            { `Selected Dogs: ${0}` }
+          </Typography>
         </Grid>
+
         <Grid item>
           <Button
             variant="contained"

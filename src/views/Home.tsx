@@ -14,7 +14,10 @@ import Login from '../components/Login';
 import { Location, SearchParams } from '../services/fetch-api-service';
 import * as SearchUtils from '../utils/search-utils';
 
-const defaultSort = 'breed:asc';
+const defaultSearchParams = {
+  sort: 'breed:asc',
+  size: 24,
+};
 
 export default function Root() {
   const pageTitle = 'Fetch Dog Search';
@@ -29,6 +32,7 @@ export default function Root() {
 
   const [breeds, setBreeds] = useState<string[]>([]);
   const [dogs, setDogs] = useState<Dog[]>([]);
+  const [totalResults, setTotalResults] = useState(0);
 
   const searchDogs = async (searchParams: SearchParams) => {
     try {
@@ -36,30 +40,12 @@ export default function Root() {
       const searchResult = await FetchApiService.searchDogs(searchParams);
       const dogsData = await FetchApiService.getDogs(searchResult.resultIds);
       setDogs(dogsData);
+      setTotalResults(searchResult.total);
     } catch (e) {
       // TODO: Handle Error
       LoggingService.log(LogLevel.Error, 'Root searchDogs failed', e);
     } finally {
       setDogListLoading(false);
-    }
-  };
-
-  const fetchInitialData = async () => {
-    try {
-      setListBreedsLoading(true);
-      const breedsData = await FetchApiService.listDogBreeds();
-      setBreeds(breedsData);
-      // TODO: find better way for storing default value
-      searchDogs({ sort: defaultSort });
-    } catch (e) {
-      if (isAxiosError(e) && e.response?.status === 401) {
-        setLoggedIn(false);
-      } else {
-        // TODO: Handle Error
-        LoggingService.log(LogLevel.Error, 'Root fetchInitialData failed', e);
-      }
-    } finally {
-      setListBreedsLoading(false);
     }
   };
 
@@ -112,7 +98,7 @@ export default function Root() {
       setLoginLoading(true);
       await FetchApiService.login({ name, email });
       setLoggedIn(true);
-      fetchInitialData();
+      searchDogs(defaultSearchParams);
     } catch (e) {
       // TODO: Handle Error
       LoggingService.log(LogLevel.Error, 'Root handleLogin failed', e);
@@ -148,8 +134,29 @@ export default function Root() {
   useEffect(() => {
     if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
+
+    const fetchInitialData = async () => {
+      try {
+        setListBreedsLoading(true);
+        const breedsData = await FetchApiService.listDogBreeds();
+        setBreeds(breedsData);
+        // TODO: find better way for storing default value
+        searchDogs(defaultSearchParams);
+      } catch (e) {
+        if (isAxiosError(e) && e.response?.status === 401) {
+          // Its a little janky... but simulates an auth check
+          setLoggedIn(false);
+        } else {
+          // TODO: Handle Error
+          LoggingService.log(LogLevel.Error, 'Root fetchInitialData failed', e);
+        }
+      } finally {
+        setListBreedsLoading(false);
+      }
+    };
+
     fetchInitialData();
-  }, [fetchInitialData]);
+  }, []);
 
   if (listBreedsLoading) {
     return (
@@ -183,6 +190,7 @@ export default function Root() {
           onSearch={handleSearch}
           onLogout={handleLogout}
           logoutLoading={logoutLoading}
+          totalResults={totalResults}
         />
       )}
       content={<DogCardList dogs={dogs} loading={dogListLoading} />}
