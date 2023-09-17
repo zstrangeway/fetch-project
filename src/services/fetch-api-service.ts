@@ -1,13 +1,17 @@
 import axios from 'axios';
+import qs from 'qs';
 import * as LoggingService from './logging-service';
 import { LogLevel } from './logging-service';
 
-const BASE_URL = import.meta.env.VITE_APP_API_URL;
 const SERVICE_NAME = 'FetchApiService';
+const BASE_URL = import.meta.env.VITE_APP_API_URL;
 
 const httpClient = axios.create({
   withCredentials: true,
   baseURL: BASE_URL,
+  paramsSerializer: {
+    indexes: null,
+  },
 });
 
 export interface LoginParams {
@@ -60,18 +64,22 @@ interface SearchDogsResponse {
 }
 
 interface Dog {
-  id: string
-  img: string
-  name: string
-  age: number
-  zip_code: string
-  breed: string
+  id: string;
+  img: string;
+  name: string;
+  age: number;
+  zip_code: string;
+  breed: string;
 }
 
 export const searchDogs = async (params?: SearchParams): Promise<SearchDogsResponse> => {
-  console.log('params', params)
   try {
-    const response = await httpClient.get<SearchDogsResponse>('/dogs/search', { params });
+    const response = await httpClient.get<SearchDogsResponse>(
+      '/dogs/search',
+      {
+        params,
+      },
+    );
     return response.data;
   } catch (error) {
     LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.searchDogs()`, error);
@@ -97,6 +105,58 @@ export const matchDogs = async (params: string[]): Promise<string> => {
   try {
     const response = await httpClient.post<MatchDogsResponse>('/dogs/match', params);
     return response.data.match;
+  } catch (error) {
+    LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.matchDogs()`, error);
+    throw error;
+  }
+};
+
+export interface Location {
+  zip_code: string;
+  latitude: number;
+  longitude: number;
+  city: string;
+  state: string;
+  county: string;
+}
+
+export const getLocations = async (params: string[]): Promise<Location[]> => {
+  try {
+    const response = await httpClient.post<Location[]>('/locations', params);
+    return response.data;
+  } catch (error) {
+    LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.matchDogs()`, error);
+    throw error;
+  }
+};
+
+export interface Coordinates {
+  lat: number;
+  lon: number;
+}
+
+export interface BoundingBox {
+  bottom_left: Coordinates;
+  top_right: Coordinates;
+}
+
+interface SearchLocationsParams {
+  geoBoundingBox: BoundingBox;
+  from?: number;
+  size?: number;
+}
+
+interface SearchLocationsResponse {
+  results: Location[];
+  total: number;
+}
+
+export const searchLocations = async (
+  params: SearchLocationsParams,
+): Promise<SearchLocationsResponse> => {
+  try {
+    const response = await httpClient.post<SearchLocationsResponse>('/locations/search', params);
+    return response.data;
   } catch (error) {
     LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.matchDogs()`, error);
     throw error;

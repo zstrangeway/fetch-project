@@ -25,6 +25,7 @@ export const log = (level: LogLevel, message?: any, ...optionalParams: any[]) =>
   if (debugMode) {
     // eslint-disable-next-line no-console
     console.log(message, ...optionalParams);
+    return;
   }
 
   switch (appStage) {

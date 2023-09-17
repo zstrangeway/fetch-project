@@ -9,7 +9,7 @@ import FetchMultiSelect from './inputs/FetchMultiSelect';
 export interface SearchInputs {
   breeds?: string[];
   zipCode?: string;
-  distance?: string;
+  distance?: number;
   ageMin?: string;
   ageMax?: string;
   sortBy?: string;
@@ -32,21 +32,22 @@ const DISTANCE_OPTIONS = [
   { label: '50', value: '50' },
   { label: '100', value: '100' },
 ];
-const SORT_FIELD_OPTIONS = [
+const SORT_BY_OPTIONS = [
   { label: 'Breed', value: 'breed' },
   { label: 'Age', value: 'age' },
   { label: 'Name', value: 'name' },
 ];
 const PAGE_SIZE_OPTIONS = [
-  { label: '25', value: 25 },
-  { label: '50', value: 50 },
-  { label: '100', value: 100 },
+  { label: '24', value: 24 },
+  { label: '48', value: 48 },
+  { label: '96', value: 96 },
 ];
 const SORT_ORDER_OPTIONS = [
   { label: 'Ascending', value: 'asc' },
   { label: 'Descending', value: 'desc' },
 ];
 
+// TODO: Add form validation
 export default function SearchForm(props: SearchFormProps) {
   const {
     breeds,
@@ -59,10 +60,10 @@ export default function SearchForm(props: SearchFormProps) {
   const [ageMin, setAgeMin] = useState<string>('');
   const [ageMax, setAgeMax] = useState<string>('');
   const [zipCode, setZipCode] = useState<string>('');
-  const [distance, setDistance] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('');
-  const [sortOrder, setSortOrder] = useState<string>('');
-  const [pageSize, setPageSize] = useState<number>(25);
+  const [distance, setDistance] = useState<number>(0);
+  const [sortBy, setSortBy] = useState<string>(SORT_BY_OPTIONS[0].value);
+  const [sortOrder, setSortOrder] = useState<string>(SORT_ORDER_OPTIONS[0].value);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0].value);
 
   const breedOptions = breeds.map((breed) => ({ label: breed, value: breed }));
 
@@ -86,9 +87,9 @@ export default function SearchForm(props: SearchFormProps) {
     setAgeMin('');
     setAgeMax('');
     setZipCode('');
-    setDistance('');
-    setSortOrder('');
-    setSortBy('');
+    setDistance(0);
+    setSortOrder(SORT_ORDER_OPTIONS[0].value);
+    setSortBy(SORT_BY_OPTIONS[0].value);
     setPageSize(25);
   };
 
@@ -126,7 +127,7 @@ export default function SearchForm(props: SearchFormProps) {
           />
         </Grid>
 
-        {/* <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6}>
           <FetchTextField
             id="zip-code"
             label="Zip Code"
@@ -134,15 +135,15 @@ export default function SearchForm(props: SearchFormProps) {
             value={zipCode}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={6}>
           <FetchSelect
             id="distance"
             label="Distance"
-            onChange={(e) => setDistance(e.target.value as string)}
+            onChange={(e) => setDistance(e.target.value as number)}
             value={distance}
             options={DISTANCE_OPTIONS}
           />
-        </Grid> */}
+        </Grid>
 
         <Grid item xs={6}>
           <FetchSelect
@@ -150,7 +151,7 @@ export default function SearchForm(props: SearchFormProps) {
             label="Sort Field"
             onChange={(e) => setSortBy(e.target.value as string)}
             value={sortBy}
-            options={SORT_FIELD_OPTIONS}
+            options={SORT_BY_OPTIONS}
           />
         </Grid>
         <Grid item xs={6}>

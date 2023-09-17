@@ -11,7 +11,10 @@ import { LogLevel } from '../services/logging-service';
 import * as FetchApiService from '../services/fetch-api-service';
 import type { Dog } from '../types/Dog';
 import Login from '../components/Login';
-import { SearchParams } from '../services/fetch-api-service';
+import { Location, SearchParams } from '../services/fetch-api-service';
+import * as SearchUtils from '../utils/search-utils';
+
+const defaultSort = 'breed:asc';
 
 export default function Root() {
   const pageTitle = 'Fetch Dog Search';
@@ -46,7 +49,8 @@ export default function Root() {
       setListBreedsLoading(true);
       const breedsData = await FetchApiService.listDogBreeds();
       setBreeds(breedsData);
-      searchDogs({});
+      // TODO: find better way for storing default value
+      searchDogs({ sort: defaultSort });
     } catch (e) {
       if (isAxiosError(e) && e.response?.status === 401) {
         setLoggedIn(false);
@@ -59,36 +63,47 @@ export default function Root() {
     }
   };
 
-  const getSearchParams = (searchInputs: SearchInputs): SearchParams => {
-    console.log('searchInputs', searchInputs);
-    
-    const searchParams: SearchParams = {};
-
-    if (searchInputs.breeds && searchInputs.breeds.length > 0) {
-      searchParams.breeds = searchInputs.breeds;
-    }
-
-    if (searchInputs.ageMin) {
-      searchParams.ageMin = searchInputs.ageMin;
-    }
-
-    if (searchInputs.ageMax) {
-      searchParams.ageMax = searchInputs.ageMax;
-    }
-
-    if (searchInputs.sortBy && searchInputs.sortOrder) {
-      searchParams.sort = `${searchInputs.sortBy}:${searchInputs.sortOrder}`;
-    }
-
-    if (searchInputs.size) {
-      searchParams.size = searchInputs.size;
-    }
-
-    return searchParams;
-  };
-
   const handleSearch = async (searchInputs: SearchInputs) => {
-    const searchParams = getSearchParams(searchInputs);
+    const searchParams = SearchUtils.getSearchParams(searchInputs);
+
+    if (searchInputs.distance && searchInputs.zipCode) {
+      // Actaul max seems to be 135.
+      // Setting max to 125 because I haven't researched root cause and want some breathing room.
+      // There is likely a more graceful way to handle this, but it works for now.
+      const maxZipCodesLength = 125;
+
+      const locations = await FetchApiService.getLocations([searchInputs.zipCode]);
+      const { latitude, longitude } = locations[0];
+      const geoBoundingBox = await SearchUtils.getBoundingBox(
+        latitude,
+        longitude,
+        searchInputs.distance,
+      );
+
+      // TODO: This block of code can potentially generate a lot of network requests.
+      // Store search params and result to only call this code if the params change.
+      let searchLocations: Location[] = [];
+      const searchAllLocations = async (from?: number) => {
+        const data = await FetchApiService.searchLocations({ geoBoundingBox, from, size: 100 });
+        if (!data.results || !data.results.length) return;
+
+        searchLocations = searchLocations.concat(data.results);
+
+        if (searchLocations.length < data.total) {
+          await searchAllLocations(searchLocations.length);
+        }
+      };
+      await searchAllLocations();
+      let zipCodes = searchLocations.map((location) => location.zip_code);
+
+      if (zipCodes.length > maxZipCodesLength) {
+        LoggingService.log(LogLevel.Info, `Found ${zipCodes.length} zip codes within range of your search.  The max number of zip codes allowed in this query is ${maxZipCodesLength}.  Truncating zip codes array to avoid error.`);
+        zipCodes = zipCodes.slice(0, maxZipCodesLength);
+      }
+
+      searchParams.zipCodes = zipCodes;
+    }
+
     searchDogs(searchParams);
   };
 
@@ -134,7 +149,7 @@ export default function Root() {
     if (dataFetchedRef.current) return;
     dataFetchedRef.current = true;
     fetchInitialData();
-  }, []);
+  }, [fetchInitialData]);
 
   if (listBreedsLoading) {
     return (
