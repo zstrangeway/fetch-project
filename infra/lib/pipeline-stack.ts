@@ -16,7 +16,7 @@ export default class PipelineStack extends cdk.Stack {
   constructor(parent: cdk.App, name: string, props: PipelineStackProps) {
     super(parent, name, props);
 
-    const getBuildCmd = (stage: AppStage) => `VITE_DEBUG_MODE=build-${false} \\
+    const getBuildCmd = (stage: AppStage) => `VITE_DEBUG_MODE=${false} \\
       VITE_APP_STAGE=${stage} \\
       VITE_APP_API_URL=${config.appStages[stage].apiUrl} \\
       npm run build -- --outDir=dist-${stage}`;
