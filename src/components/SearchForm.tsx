@@ -145,7 +145,7 @@ export default function SearchForm(props: SearchFormProps) {
             value={zipCode}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <FetchSelect
             id="distance"
             label="Distance"
@@ -155,7 +155,7 @@ export default function SearchForm(props: SearchFormProps) {
           />
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <FetchSelect
             id="sort-field"
             label="Sort Field"
@@ -164,7 +164,7 @@ export default function SearchForm(props: SearchFormProps) {
             options={SORT_BY_OPTIONS}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <FetchSelect
             id="sort-order"
             label="Sort Order"
