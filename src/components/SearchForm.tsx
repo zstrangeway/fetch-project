@@ -20,9 +20,12 @@ export interface SearchInputs {
 export interface SearchFormProps {
   breeds: string[];
   logoutLoading: boolean;
+  matchLoading: boolean;
+  dogListLoading: boolean;
   onLogout: () => void;
   onMatch: () => void;
   onSearch: (searchInputs: SearchInputs) => void;
+  selectedDogsCount: number;
   totalResults: number;
 }
 
@@ -52,10 +55,13 @@ const SORT_ORDER_OPTIONS = [
 export default function SearchForm(props: SearchFormProps) {
   const {
     breeds,
+    dogListLoading,
     logoutLoading,
+    matchLoading,
     onLogout,
     onMatch,
     onSearch,
+    selectedDogsCount,
     totalResults,
   } = props;
   const [selectedBreeds, setSelectedBreeds] = useState<string[]>([]);
@@ -191,6 +197,7 @@ export default function SearchForm(props: SearchFormProps) {
             variant="contained"
             fullWidth
             onClick={handleSearchClicked}
+            disabled={dogListLoading}
           >
             Search
           </Button>
@@ -214,7 +221,7 @@ export default function SearchForm(props: SearchFormProps) {
       >
         <Grid item>
           <Typography variant="body1" color="text.secondary">
-            { `Selected Dogs: ${0}` }
+            { `Selected Dogs: ${selectedDogsCount}` }
           </Typography>
         </Grid>
 
@@ -223,6 +230,7 @@ export default function SearchForm(props: SearchFormProps) {
             variant="contained"
             fullWidth
             onClick={onMatch}
+            disabled={matchLoading}
           >
             Match
           </Button>

@@ -11,15 +11,23 @@ interface DogCardListProps {
   dogs: Dog[];
   loading: boolean;
   onPageChange: (event: React.ChangeEvent<unknown>, page: number) => void;
+  onSelectToggled: (id: string) => void;
   page: number;
   pageCount: number;
+  selectedDogs: string[];
 }
 
 const SPACING = 2;
 
 export default function DogCardList(props: DogCardListProps) {
   const {
-    dogs, loading, onPageChange, page, pageCount,
+    dogs,
+    loading,
+    onPageChange,
+    onSelectToggled,
+    page,
+    pageCount,
+    selectedDogs,
   } = props;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -33,20 +41,25 @@ export default function DogCardList(props: DogCardListProps) {
   return (
     <Stack alignItems="center">
       <Grid container spacing={SPACING}>
-        { dogs.map((dog) => (<DogCard key={dog.id} dog={dog} />)) }
+        {
+          dogs.map((dog) => (
+            <DogCard
+              key={dog.id}
+              dog={dog}
+              onSelectToggled={onSelectToggled}
+              selected={selectedDogs.indexOf(dog.id) > -1}
+            />
+          ))
+        }
       </Grid>
       { pageCount > 1
         && (
         <Pagination
-          sx={{ mt: SPACING * 2}}
+          sx={{ mt: SPACING * 2 }}
           color="primary"
-              // color="secondary"
-              // variant="outlined"
-              // shape="rounded"
           size={isMobile ? 'small' : 'medium'}
           hidePrevButton={isMobile}
           hideNextButton={isMobile}
-
           count={pageCount}
           showFirstButton
           showLastButton

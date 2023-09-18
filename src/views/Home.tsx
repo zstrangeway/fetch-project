@@ -14,6 +14,7 @@ import Login from '../components/Login';
 import { Location, SearchParams } from '../services/fetch-api-service';
 import * as SearchUtils from '../utils/search-utils';
 import useTitle from '../hooks/useTitle';
+import MatchDialog from '../components/MatchDialog';
 
 const defaultSarchInputs = {
   sortBy: 'breed',
@@ -30,16 +31,20 @@ export default function Root() {
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
   const [listBreedsLoading, setListBreedsLoading] = useState<boolean>(true);
   const [dogListLoading, setDogListLoading] = useState<boolean>(false);
+  const [matchLoading, setMatchLoading] = useState<boolean>(false);
 
   const [loggedIn, setLoggedIn] = useState<boolean>(true);
   const [breeds, setBreeds] = useState<string[]>([]);
   const [dogs, setDogs] = useState<Dog[]>([]);
+  const [selectedDogs, setSelectedDogs] = useState<string[]>([]);
   const [totalResults, setTotalResults] = useState<number>(0);
 
   const [page, setPage] = useState<number>(1);
   const [pageCount, setPageCount] = useState<number>(1);
 
   const [lastSearch, setLastSearch] = useState<SearchInputs>(defaultSarchInputs);
+
+  const [match, setMatch] = useState<Dog | null>(null);
 
   const searchDogs = async (searchParams: SearchParams) => {
     try {
@@ -136,15 +141,23 @@ export default function Root() {
     }
   };
 
-  const handleMatch = () => {
+  const handleMatch = async () => {
     try {
-      // TODO
+      setMatchLoading(true);
+
+      const matchDogsResult = await FetchApiService.matchDogs(selectedDogs);
+      const getDogsResult = await FetchApiService.getDogs([matchDogsResult]);
+      setMatch(getDogsResult[0]);
     } catch (e) {
       // TODO: Handle Error
       LoggingService.log(LogLevel.Error, 'Root handleMatch failed', e);
     } finally {
-      // TODO
+      setMatchLoading(false);
     }
+  };
+
+  const handleMatchClose = () => {
+    setMatch(null);
   };
 
   const handlePageChange = (
@@ -152,6 +165,17 @@ export default function Root() {
     newPage: number,
   ) => {
     handleSearch(lastSearch, newPage);
+  };
+
+  const handleSelectToggled = (id: string) => {
+    if (selectedDogs.indexOf(id) > -1) {
+      setSelectedDogs(selectedDogs.filter((e) => e !== id));
+    } else if (selectedDogs.length >= 100) {
+      // TODO: Provide user better feedback that the limit has been reached
+      LoggingService.log(LogLevel.Info, 'Unable to select another dog, max = 100');
+    } else {
+      setSelectedDogs(selectedDogs.concat(id));
+    }
   };
 
   useEffect(() => {
@@ -178,6 +202,7 @@ export default function Root() {
     };
 
     fetchInitialData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (listBreedsLoading) {
@@ -203,27 +228,38 @@ export default function Root() {
   }
 
   return (
-    <FetchLayout
-      title={pageTitle}
-      drawer={(
-        <SearchForm
-          breeds={breeds}
-          onMatch={handleMatch}
-          onSearch={handleSearch}
-          onLogout={handleLogout}
-          logoutLoading={logoutLoading}
-          totalResults={totalResults}
-        />
+    <>
+      <FetchLayout
+        title={pageTitle}
+        drawer={(
+          <SearchForm
+            breeds={breeds}
+            matchLoading={matchLoading}
+            dogListLoading={dogListLoading}
+            onMatch={handleMatch}
+            onSearch={handleSearch}
+            onLogout={handleLogout}
+            logoutLoading={logoutLoading}
+            totalResults={totalResults}
+            selectedDogsCount={selectedDogs.length}
+          />
       )}
-      content={(
-        <DogCardList
-          dogs={dogs}
-          loading={dogListLoading}
-          onPageChange={handlePageChange}
-          page={page}
-          pageCount={pageCount}
-        />
+        content={(
+          <DogCardList
+            dogs={dogs}
+            selectedDogs={selectedDogs}
+            loading={dogListLoading}
+            onPageChange={handlePageChange}
+            page={page}
+            pageCount={pageCount}
+            onSelectToggled={handleSelectToggled}
+          />
       )}
-    />
+      />
+      <MatchDialog
+        match={match}
+        onClose={handleMatchClose}
+      />
+    </>
   );
 }
