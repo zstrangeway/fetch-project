@@ -23,4 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# Build configs and artifacts
 .env.aws-cdk
+cdk.out
+dist-dev
+dist-preprod
+dist-prod

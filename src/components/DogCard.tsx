@@ -10,7 +10,9 @@ interface DogCardProps {
 export default function DogCard(props: DogCardProps) {
   const { dog } = props;
   const {
-    img, name, age, zip_code, breed,
+    img, name, age,
+    // zip_code,
+    breed,
   } = dog;
   return (
     <Grid item xs={12} sm={6} md={4}>

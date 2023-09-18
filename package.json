@@ -2,12 +2,12 @@
   "name": "fetch-project",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean": "rm -rf cdk.out && rm -rf dist && rm -rf dist-dev && rm -rf dist-preprod && rm -rf dist-prod && rm -rf node_modules"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -23,7 +23,10 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
     "sort-by": "^0.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "constructs": "^10.0.0",
+    "aws-cdk-lib": "2.95.1",
+    "env-var": "^7.4.1"
   },
   "devDependencies": {
     "@types/node": "^20.6.1",

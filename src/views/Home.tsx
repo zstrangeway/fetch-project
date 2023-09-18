@@ -13,22 +13,24 @@ import type { Dog } from '../types/Dog';
 import Login from '../components/Login';
 import { Location, SearchParams } from '../services/fetch-api-service';
 import * as SearchUtils from '../utils/search-utils';
+import useTitle from '../hooks/useTitle';
 
 const defaultSarchInputs = {
   sortBy: 'breed',
   sortOrder: 'asc',
   size: 24,
-}
+};
 
 export default function Root() {
   const pageTitle = 'Fetch Dog Search';
+  useTitle(pageTitle);
   const dataFetchedRef = useRef(false);
-  
+
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
   const [listBreedsLoading, setListBreedsLoading] = useState<boolean>(true);
   const [dogListLoading, setDogListLoading] = useState<boolean>(false);
-  
+
   const [loggedIn, setLoggedIn] = useState<boolean>(true);
   const [breeds, setBreeds] = useState<string[]>([]);
   const [dogs, setDogs] = useState<Dog[]>([]);
