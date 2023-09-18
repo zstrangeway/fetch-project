@@ -10,6 +10,9 @@ const themeConfig = {
       main: "#fba91a",
     },
   },
+  typography: {
+    fontFamily: ["Lexend", "sans-serif"].join(","),
+  },
 };
 
 export default function Root() {
