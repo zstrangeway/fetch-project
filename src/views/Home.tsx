@@ -38,6 +38,7 @@ export default function Root() {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [selectedDogs, setSelectedDogs] = useState<string[]>([]);
   const [totalResults, setTotalResults] = useState<number>(0);
+  const [locationMap, setLocationMap] = useState<Record<number, Location>>({});
 
   const [page, setPage] = useState<number>(1);
   const [pageCount, setPageCount] = useState<number>(1);
@@ -65,18 +66,20 @@ export default function Root() {
   };
 
   const handleSearch = async (searchInputs: SearchInputs, newPage?: number) => {
+    // TODO: This function has a lot of room for optimization.
+    // There are opportunities to reduce the number of api calls by caching data
     setLastSearch(searchInputs);
     const searchParams = SearchUtils.getSearchParams(searchInputs);
 
     if (searchInputs.distance && searchInputs.zipCode) {
       setDogListLoading(true);
-      // Actaul max seems to be 135.
+      // Actaul max seems to be 135, more zipes codes than that causes network errors.
       // Setting max to 125 because I haven't researched root cause and want some breathing room.
       // There is likely a more graceful way to handle this, but it works for now.
       const maxZipCodesLength = 125;
 
-      const locations = await FetchApiService.getLocations([searchInputs.zipCode]);
-      const { latitude, longitude } = locations[0];
+      const getLocationsResult = await FetchApiService.getLocations([searchInputs.zipCode]);
+      const { latitude, longitude } = getLocationsResult[0];
       const geoBoundingBox = await SearchUtils.getBoundingBox(
         latitude,
         longitude,
@@ -84,7 +87,6 @@ export default function Root() {
       );
 
       // TODO: This block of code can potentially generate a lot of network requests.
-      // Store search params and result to only call this code if the params change.
       let searchLocations: Location[] = [];
       const searchAllLocations = async (from?: number) => {
         const data = await FetchApiService.searchLocations({ geoBoundingBox, from, size: 100 });
@@ -97,7 +99,16 @@ export default function Root() {
         }
       };
       await searchAllLocations();
-      let zipCodes = searchLocations.map((location) => location.zip_code);
+
+      const newLocationMap: Record<string, Location> = {};
+      let zipCodes: string[] = [];
+
+      searchLocations.forEach((location) => {
+        zipCodes.push(location.zip_code);
+        newLocationMap[location.zip_code] = location;
+      });
+
+      setLocationMap(newLocationMap);
 
       if (zipCodes.length > maxZipCodesLength) {
         LoggingService.log(LogLevel.Info, `Found ${zipCodes.length} zip codes within range of your search.  The max number of zip codes allowed in this query is ${maxZipCodesLength}.  Truncating zip codes array to avoid error.`);
@@ -253,6 +264,8 @@ export default function Root() {
             page={page}
             pageCount={pageCount}
             onSelectToggled={handleSelectToggled}
+            locationMap={locationMap}
+            inputZip={lastSearch.zipCode}
           />
       )}
       />

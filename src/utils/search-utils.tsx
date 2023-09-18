@@ -1,6 +1,6 @@
 import * as geolib from 'geolib';
 import { SearchInputs } from '../components/SearchForm';
-import { BoundingBox, SearchParams } from '../services/fetch-api-service';
+import { BoundingBox, Location, SearchParams } from '../services/fetch-api-service';
 
 export function getSearchParams(searchInputs: SearchInputs): SearchParams {
   const searchParams: SearchParams = {};
@@ -49,3 +49,17 @@ export function getBoundingBox(
     },
   };
 }
+
+export const getDistanceBetween = (
+  start: number,
+  end: number,
+  lookupMap: Record<number, Location>,
+): number => {
+  const startCoords = lookupMap[start];
+  const endCoords = lookupMap[end];
+  console.log('startCoords', startCoords);
+  console.log('endCoords', endCoords);
+  const distanceInMeters = geolib.getDistance(startCoords, endCoords);
+  console.log('distanceInMeters', distanceInMeters);
+  return geolib.convertDistance(distanceInMeters, 'mi');
+};

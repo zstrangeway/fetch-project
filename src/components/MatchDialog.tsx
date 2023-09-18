@@ -1,10 +1,8 @@
-import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import {
-  Card, CardMedia, CardContent, Typography, IconButton, Avatar, CardHeader,
+  Card, CardMedia, CardContent, Typography, CardHeader,
 } from '@mui/material';
 import { Dog } from '../types/Dog';
-import { red } from '@mui/material/colors';
 
 export interface SimpleDialogProps {
   match: Dog | null;
@@ -17,27 +15,29 @@ export default function MatchDialog(props: SimpleDialogProps) {
 
   return (
     <Dialog onClose={onClose} open={open}>
-      <Card sx={{ width: 400 }}>
-        <CardHeader
-          title="You have a Match!"
-        />
-        <CardMedia
-          sx={{ height: 300 }}
-          image={match?.img}
-          title={`${match?.name}, ${match?.breed}`}
-        />
-        <CardContent sx={{ position: 'relative' }}>
-          <Typography gutterBottom variant="h6" component="div">
-            { match?.name }
-          </Typography>
-          <Typography gutterBottom variant="subtitle1" component="div">
-            { `${match?.breed}, ${match?.age} Years old` }
-          </Typography>
-          <Typography variant="body2" color="text">
-            {`${match?.zip_code}, 13 miles away`}
-          </Typography>
-        </CardContent>
-      </Card>
+      { match && (
+        <Card sx={{ width: 400 }}>
+          <CardHeader
+            title="You have a Match!"
+          />
+          <CardMedia
+            sx={{ height: 300 }}
+            image={match.img}
+            title={`A ${match.age} year old ${match.breed}, named ${match.name}`}
+          />
+          <CardContent sx={{ position: 'relative' }}>
+            <Typography gutterBottom variant="h6" component="div">
+              { match.name }
+            </Typography>
+            <Typography gutterBottom variant="subtitle1" component="div">
+              { `${match.breed}, ${match.age} Years old` }
+            </Typography>
+            <Typography variant="body2" color="text">
+              { match.zip_code }
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
     </Dialog>
   );
 }

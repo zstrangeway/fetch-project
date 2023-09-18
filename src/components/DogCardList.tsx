@@ -6,10 +6,13 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { Stack } from '@mui/material';
 import DogCard from './DogCard';
 import { Dog } from '../types/Dog';
+import { Location } from '../services/fetch-api-service';
 
 interface DogCardListProps {
   dogs: Dog[];
+  inputZip?: number;
   loading: boolean;
+  locationMap: Record<number, Location>;
   onPageChange: (event: React.ChangeEvent<unknown>, page: number) => void;
   onSelectToggled: (id: string) => void;
   page: number;
@@ -22,7 +25,9 @@ const SPACING = 2;
 export default function DogCardList(props: DogCardListProps) {
   const {
     dogs,
+    inputZip,
     loading,
+    locationMap,
     onPageChange,
     onSelectToggled,
     page,
@@ -48,6 +53,8 @@ export default function DogCardList(props: DogCardListProps) {
               dog={dog}
               onSelectToggled={onSelectToggled}
               selected={selectedDogs.indexOf(dog.id) > -1}
+              locationMap={locationMap}
+              inputZip={inputZip}
             />
           ))
         }

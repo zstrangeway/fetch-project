@@ -4,15 +4,21 @@ import {
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Dog } from '../types/Dog';
+import { getDistanceBetween } from '../utils/search-utils';
+import { Location } from '../services/fetch-api-service';
 
 interface DogCardProps {
   dog: Dog;
-  selected: boolean;
+  inputZip?: number;
+  locationMap: Record<number, Location>;
   onSelectToggled: (id: string) => void;
+  selected: boolean;
 }
 
 export default function DogCard(props: DogCardProps) {
-  const { dog, onSelectToggled, selected } = props;
+  const {
+    dog, inputZip, locationMap, onSelectToggled, selected,
+  } = props;
   const {
     id,
     img,
@@ -22,13 +28,19 @@ export default function DogCard(props: DogCardProps) {
     zip_code,
     breed,
   } = dog;
+  const locationString = (): string => {
+    if (!inputZip || !locationMap) return `Location: ${zip_code}`;
+    const dist = Math.round(getDistanceBetween(inputZip, parseInt(zip_code, 10), locationMap));
+    return `Location: ${zip_code}, (${dist} miles)`;
+  };
+
   return (
     <Grid item xs={12} sm={6} md={4}>
       <Card>
         <CardMedia
           sx={{ height: 200 }}
           image={img}
-          title={`${name}, ${breed}`}
+          title={`A ${age} year old ${breed}, named ${name}`}
         />
         <CardContent sx={{ position: 'relative' }}>
           <Typography gutterBottom variant="h6" component="div">
@@ -38,7 +50,7 @@ export default function DogCard(props: DogCardProps) {
             { `${breed}, ${age} Years old` }
           </Typography>
           <Typography variant="body2" color="text">
-            {`${zip_code}, 13 miles away`}
+            { locationString() }
           </Typography>
           <IconButton
             color="error"
