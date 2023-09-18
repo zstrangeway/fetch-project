@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import { Divider, Typography } from '@mui/material';
-import FetchTextField from './inputs/FetchTextField';
-import FetchSelect from './inputs/FetchSelect';
-import FetchMultiSelect from './inputs/FetchMultiSelect';
+import { useState } from "react";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import { Divider, Typography } from "@mui/material";
+import FetchTextField from "./inputs/FetchTextField";
+import FetchSelect from "./inputs/FetchSelect";
+import FetchMultiSelect from "./inputs/FetchMultiSelect";
 
 export interface SearchInputs {
   breeds?: string[];
@@ -31,24 +31,24 @@ export interface SearchFormProps {
 
 const FORM_SPACING = 1;
 const DISTANCE_OPTIONS = [
-  { label: 'Any', value: '0' },
-  { label: '25', value: '25' },
-  { label: '50', value: '50' },
-  { label: '100', value: '100' },
+  { label: "Any", value: "0" },
+  { label: "25", value: "25" },
+  { label: "50", value: "50" },
+  { label: "100", value: "100" },
 ];
 const SORT_BY_OPTIONS = [
-  { label: 'Breed', value: 'breed' },
-  { label: 'Age', value: 'age' },
-  { label: 'Name', value: 'name' },
+  { label: "Breed", value: "breed" },
+  { label: "Age", value: "age" },
+  { label: "Name", value: "name" },
 ];
 const PAGE_SIZE_OPTIONS = [
-  { label: '24 Miles', value: 24 },
-  { label: '48 Miles', value: 48 },
-  { label: '96 Miles', value: 96 },
+  { label: "24 Miles", value: 24 },
+  { label: "48 Miles", value: 48 },
+  { label: "96 Miles", value: 96 },
 ];
 const SORT_ORDER_OPTIONS = [
-  { label: 'Ascending', value: 'asc' },
-  { label: 'Descending', value: 'desc' },
+  { label: "Ascending", value: "asc" },
+  { label: "Descending", value: "desc" },
 ];
 
 // TODO: Add form validation
@@ -65,12 +65,14 @@ export default function SearchForm(props: SearchFormProps) {
     totalResults,
   } = props;
   const [selectedBreeds, setSelectedBreeds] = useState<string[]>([]);
-  const [ageMin, setAgeMin] = useState<string>('');
-  const [ageMax, setAgeMax] = useState<string>('');
-  const [zipCode, setZipCode] = useState<string>('');
+  const [ageMin, setAgeMin] = useState<string>("");
+  const [ageMax, setAgeMax] = useState<string>("");
+  const [zipCode, setZipCode] = useState<string>("");
   const [distance, setDistance] = useState<number>(0);
   const [sortBy, setSortBy] = useState<string>(SORT_BY_OPTIONS[0].value);
-  const [sortOrder, setSortOrder] = useState<string>(SORT_ORDER_OPTIONS[0].value);
+  const [sortOrder, setSortOrder] = useState<string>(
+    SORT_ORDER_OPTIONS[0].value,
+  );
   const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0].value);
 
   const breedOptions = breeds.map((breed) => ({ label: breed, value: breed }));
@@ -92,9 +94,9 @@ export default function SearchForm(props: SearchFormProps) {
 
   const handleResetClicked = async () => {
     setSelectedBreeds([]);
-    setAgeMin('');
-    setAgeMax('');
-    setZipCode('');
+    setAgeMin("");
+    setAgeMax("");
+    setZipCode("");
     setDistance(0);
     setSortOrder(SORT_ORDER_OPTIONS[0].value);
     setSortBy(SORT_BY_OPTIONS[0].value);
@@ -221,7 +223,7 @@ export default function SearchForm(props: SearchFormProps) {
       >
         <Grid item>
           <Typography variant="body1" color="text.secondary">
-            { `Selected Dogs: ${selectedDogsCount}` }
+            {`Selected Dogs: ${selectedDogsCount}`}
           </Typography>
         </Grid>
 

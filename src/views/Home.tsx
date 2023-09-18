@@ -1,29 +1,29 @@
-import { useEffect, useRef, useState } from 'react';
-import { isAxiosError } from 'axios';
-import Grid from '@mui/material/Grid';
-import CircularProgress from '@mui/material/CircularProgress';
-import DogCardList from '../components/DogCardList';
-import FetchLayout from '../components/layout/FetchLayout';
-import SearchForm from '../components/SearchForm';
-import type { SearchInputs } from '../components/SearchForm';
-import * as LoggingService from '../services/logging-service';
-import { LogLevel } from '../services/logging-service';
-import * as FetchApiService from '../services/fetch-api-service';
-import type { Dog } from '../types/Dog';
-import Login from '../components/Login';
-import { Location, SearchParams } from '../services/fetch-api-service';
-import * as SearchUtils from '../utils/search-utils';
-import useTitle from '../hooks/useTitle';
-import MatchDialog from '../components/MatchDialog';
+import { useEffect, useRef, useState } from "react";
+import { isAxiosError } from "axios";
+import Grid from "@mui/material/Grid";
+import CircularProgress from "@mui/material/CircularProgress";
+import DogCardList from "../components/DogCardList";
+import FetchLayout from "../components/layout/FetchLayout";
+import SearchForm from "../components/SearchForm";
+import type { SearchInputs } from "../components/SearchForm";
+import * as LoggingService from "../services/logging-service";
+import { LogLevel } from "../services/logging-service";
+import * as FetchApiService from "../services/fetch-api-service";
+import type { Dog } from "../types/Dog";
+import Login from "../components/Login";
+import { Location, SearchParams } from "../services/fetch-api-service";
+import * as SearchUtils from "../utils/search-utils";
+import useTitle from "../hooks/useTitle";
+import MatchDialog from "../components/MatchDialog";
 
 const defaultSarchInputs = {
-  sortBy: 'breed',
-  sortOrder: 'asc',
+  sortBy: "breed",
+  sortOrder: "asc",
   size: 24,
 };
 
 export default function Root() {
-  const pageTitle = 'Fetch Dog Search';
+  const pageTitle = "Fetch Dog Search";
   useTitle(pageTitle);
   const dataFetchedRef = useRef(false);
 
@@ -43,7 +43,8 @@ export default function Root() {
   const [page, setPage] = useState<number>(1);
   const [pageCount, setPageCount] = useState<number>(1);
 
-  const [lastSearch, setLastSearch] = useState<SearchInputs>(defaultSarchInputs);
+  const [lastSearch, setLastSearch] =
+    useState<SearchInputs>(defaultSarchInputs);
 
   const [match, setMatch] = useState<Dog | null>(null);
 
@@ -55,11 +56,13 @@ export default function Root() {
       setDogs(dogsData);
       setTotalResults(searchResult.total);
       setPageCount(
-        Math.ceil(searchResult.total / (searchParams.size ?? defaultSarchInputs.size)),
+        Math.ceil(
+          searchResult.total / (searchParams.size ?? defaultSarchInputs.size),
+        ),
       );
     } catch (e) {
       // TODO: Handle Error
-      LoggingService.log(LogLevel.Error, 'Root searchDogs failed', e);
+      LoggingService.log(LogLevel.Error, "Root searchDogs failed", e);
     } finally {
       setDogListLoading(false);
     }
@@ -78,7 +81,9 @@ export default function Root() {
       // There is likely a more graceful way to handle this, but it works for now.
       const maxZipCodesLength = 125;
 
-      const getLocationsResult = await FetchApiService.getLocations([searchInputs.zipCode]);
+      const getLocationsResult = await FetchApiService.getLocations([
+        searchInputs.zipCode,
+      ]);
       const { latitude, longitude } = getLocationsResult[0];
       const geoBoundingBox = await SearchUtils.getBoundingBox(
         latitude,
@@ -89,7 +94,11 @@ export default function Root() {
       // TODO: This block of code can potentially generate a lot of network requests.
       let searchLocations: Location[] = [];
       const searchAllLocations = async (from?: number) => {
-        const data = await FetchApiService.searchLocations({ geoBoundingBox, from, size: 100 });
+        const data = await FetchApiService.searchLocations({
+          geoBoundingBox,
+          from,
+          size: 100,
+        });
         if (!data.results || !data.results.length) return;
 
         searchLocations = searchLocations.concat(data.results);
@@ -111,14 +120,18 @@ export default function Root() {
       setLocationMap(newLocationMap);
 
       if (zipCodes.length > maxZipCodesLength) {
-        LoggingService.log(LogLevel.Info, `Found ${zipCodes.length} zip codes within range of your search.  The max number of zip codes allowed in this query is ${maxZipCodesLength}.  Truncating zip codes array to avoid error.`);
+        LoggingService.log(
+          LogLevel.Info,
+          `Found ${zipCodes.length} zip codes within range of your search.  The max number of zip codes allowed in this query is ${maxZipCodesLength}.  Truncating zip codes array to avoid error.`,
+        );
         zipCodes = zipCodes.slice(0, maxZipCodesLength);
       }
       searchParams.zipCodes = zipCodes;
     }
 
     if (newPage && newPage > 1) {
-      searchParams.from = (newPage - 1) * (searchParams.size ?? defaultSarchInputs.size);
+      searchParams.from =
+        (newPage - 1) * (searchParams.size ?? defaultSarchInputs.size);
     }
 
     setPage(newPage ?? 1);
@@ -133,7 +146,7 @@ export default function Root() {
       handleSearch(defaultSarchInputs);
     } catch (e) {
       // TODO: Handle Error
-      LoggingService.log(LogLevel.Error, 'Root handleLogin failed', e);
+      LoggingService.log(LogLevel.Error, "Root handleLogin failed", e);
     } finally {
       setLoginLoading(false);
     }
@@ -146,7 +159,7 @@ export default function Root() {
       setLoggedIn(false);
     } catch (e) {
       // TODO: Handle Error
-      LoggingService.log(LogLevel.Error, 'Root handleLogout failed', e);
+      LoggingService.log(LogLevel.Error, "Root handleLogout failed", e);
     } finally {
       setLogoutLoading(false);
     }
@@ -161,7 +174,7 @@ export default function Root() {
       setMatch(getDogsResult[0]);
     } catch (e) {
       // TODO: Handle Error
-      LoggingService.log(LogLevel.Error, 'Root handleMatch failed', e);
+      LoggingService.log(LogLevel.Error, "Root handleMatch failed", e);
     } finally {
       setMatchLoading(false);
     }
@@ -183,7 +196,10 @@ export default function Root() {
       setSelectedDogs(selectedDogs.filter((e) => e !== id));
     } else if (selectedDogs.length >= 100) {
       // TODO: Provide user better feedback that the limit has been reached
-      LoggingService.log(LogLevel.Info, 'Unable to select another dog, max = 100');
+      LoggingService.log(
+        LogLevel.Info,
+        "Unable to select another dog, max = 100",
+      );
     } else {
       setSelectedDogs(selectedDogs.concat(id));
     }
@@ -205,7 +221,7 @@ export default function Root() {
           setLoggedIn(false);
         } else {
           // TODO: Handle Error
-          LoggingService.log(LogLevel.Error, 'Root fetchInitialData failed', e);
+          LoggingService.log(LogLevel.Error, "Root fetchInitialData failed", e);
         }
       } finally {
         setListBreedsLoading(false);
@@ -213,7 +229,7 @@ export default function Root() {
     };
 
     fetchInitialData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (listBreedsLoading) {
@@ -223,7 +239,7 @@ export default function Root() {
         spacing={0}
         alignItems="center"
         justifyContent="center"
-        style={{ minHeight: '100vh' }}
+        style={{ minHeight: "100vh" }}
       >
         <Grid item sx={{ flexGrow: 1, maxWidth: 300 }}>
           <CircularProgress />
@@ -233,16 +249,14 @@ export default function Root() {
   }
 
   if (!loggedIn) {
-    return (
-      <Login onLogin={handleLogin} loading={loginLoading} />
-    );
+    return <Login onLogin={handleLogin} loading={loginLoading} />;
   }
 
   return (
     <>
       <FetchLayout
         title={pageTitle}
-        drawer={(
+        drawer={
           <SearchForm
             breeds={breeds}
             matchLoading={matchLoading}
@@ -254,8 +268,8 @@ export default function Root() {
             totalResults={totalResults}
             selectedDogsCount={selectedDogs.length}
           />
-      )}
-        content={(
+        }
+        content={
           <DogCardList
             dogs={dogs}
             selectedDogs={selectedDogs}
@@ -265,14 +279,11 @@ export default function Root() {
             pageCount={pageCount}
             onSelectToggled={handleSelectToggled}
             locationMap={locationMap}
-            inputZip={lastSearch.zipCode}
+            inputZip={parseInt(lastSearch?.zipCode ?? "", 10)}
           />
-      )}
+        }
       />
-      <MatchDialog
-        match={match}
-        onClose={handleMatchClose}
-      />
+      <MatchDialog match={match} onClose={handleMatchClose} />
     </>
   );
 }

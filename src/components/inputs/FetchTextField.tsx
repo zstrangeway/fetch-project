@@ -1,5 +1,5 @@
-import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
+import FormControl from "@mui/material/FormControl";
+import TextField from "@mui/material/TextField";
 
 export interface FetchTextFieldProps {
   id: string;
@@ -10,13 +10,7 @@ export interface FetchTextFieldProps {
 }
 
 export default function FetchTextField(props: FetchTextFieldProps) {
-  const {
-    disabled,
-    id,
-    label,
-    onChange,
-    value,
-  } = props;
+  const { disabled, id, label, onChange, value } = props;
 
   return (
     <FormControl fullWidth>

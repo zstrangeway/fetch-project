@@ -1,8 +1,8 @@
-import * as cdk from 'aws-cdk-lib';
-import * as pipelines from 'aws-cdk-lib/pipelines';
-import { AppStage, getConfig } from './get-config';
-import addMetaTags from './add-meta-tags';
-import StaticSiteStage from './static-site-stage';
+import * as cdk from "aws-cdk-lib";
+import * as pipelines from "aws-cdk-lib/pipelines";
+import { AppStage, getConfig } from "./get-config";
+import addMetaTags from "./add-meta-tags";
+import StaticSiteStage from "./static-site-stage";
 
 const config = getConfig();
 
@@ -21,19 +21,17 @@ export default class PipelineStack extends cdk.Stack {
       VITE_APP_API_URL=${config.appStages[stage].apiUrl} \\
       npm run build -- --outDir=dist-${stage}`;
 
-    const pipeline = new pipelines.CodePipeline(this, 'FetchProject-Pipeline', {
-      pipelineName: 'FetchProject-Pipeline',
-      synth: new pipelines.CodeBuildStep('Synth', {
+    const pipeline = new pipelines.CodePipeline(this, "FetchProject-Pipeline", {
+      pipelineName: "FetchProject-Pipeline",
+      synth: new pipelines.CodeBuildStep("Synth", {
         input: pipelines.CodePipelineSource.gitHub(config.repo, config.branch),
-        installCommands: [
-          'npm install -g aws-cdk',
-        ],
+        installCommands: ["npm install -g aws-cdk"],
         commands: [
-          'npm ci',
+          "npm ci",
           getBuildCmd(AppStage.Dev),
           getBuildCmd(AppStage.PreProd),
           getBuildCmd(AppStage.Prod),
-          'npx cdk synth',
+          "npx cdk synth",
         ],
         env: {
           // Note, changing environment variables may require you to
@@ -62,7 +60,7 @@ export default class PipelineStack extends cdk.Stack {
     });
 
     // Add Stages for Dev, ProProd and Prod
-    const devStage = new StaticSiteStage(this, 'Dev', {
+    const devStage = new StaticSiteStage(this, "Dev", {
       env: {
         account: config.appStages.dev.account,
         region: config.appStages.dev.region,
@@ -72,7 +70,7 @@ export default class PipelineStack extends cdk.Stack {
       service: props.service,
       stage: AppStage.Dev,
     });
-    const preprodStage = new StaticSiteStage(this, 'PreProd', {
+    const preprodStage = new StaticSiteStage(this, "PreProd", {
       env: {
         account: config.appStages.preprod.account,
         region: config.appStages.preprod.region,
@@ -82,7 +80,7 @@ export default class PipelineStack extends cdk.Stack {
       service: props.service,
       stage: AppStage.PreProd,
     });
-    const prodStage = new StaticSiteStage(this, 'Prod', {
+    const prodStage = new StaticSiteStage(this, "Prod", {
       env: {
         account: config.appStages.prod.account,
         region: config.appStages.prod.region,
@@ -97,14 +95,13 @@ export default class PipelineStack extends cdk.Stack {
     pipeline.addStage(preprodStage);
     pipeline.addStage(prodStage, {
       // Prod contains a manual review step before deploying
-      pre: [
-        new pipelines.ManualApprovalStep('PromoteToProd'),
-      ],
+      pre: [new pipelines.ManualApprovalStep("PromoteToProd")],
     });
 
     // Tagging
-    [pipeline, devStage, preprodStage, prodStage]
-      .forEach((construct) => addMetaTags(construct, props.appName, props.service, AppStage.Infra));
+    [pipeline, devStage, preprodStage, prodStage].forEach((construct) =>
+      addMetaTags(construct, props.appName, props.service, AppStage.Infra),
+    );
 
     addMetaTags(pipeline, props.appName, props.service, AppStage.Infra);
   }

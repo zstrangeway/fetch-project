@@ -1,8 +1,8 @@
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { Key } from 'react';
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { Key } from "react";
 
 export interface FetchSelectOption<OptionValueType> {
   label: string;
@@ -12,7 +12,7 @@ export interface FetchSelectOption<OptionValueType> {
 export interface FetchSelectProps<OptionValueType, ValueType> {
   id: string;
   label: string;
-  onChange: ((event: SelectChangeEvent<unknown>, child: React.ReactNode) => void);
+  onChange: (event: SelectChangeEvent<unknown>, child: React.ReactNode) => void;
   options: FetchSelectOption<OptionValueType>[];
   value: ValueType;
 }
@@ -20,13 +20,7 @@ export interface FetchSelectProps<OptionValueType, ValueType> {
 export default function FetchSelect<OptionValueType extends Key, ValueType>(
   props: FetchSelectProps<OptionValueType, ValueType>,
 ) {
-  const {
-    id,
-    label,
-    onChange,
-    options,
-    value,
-  } = props;
+  const { id, label, onChange, options, value } = props;
 
   const labelId = `${id}-label`;
 
@@ -41,7 +35,9 @@ export default function FetchSelect<OptionValueType extends Key, ValueType>(
         onChange={onChange}
       >
         {options.map((option) => (
-          <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

@@ -1,13 +1,13 @@
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Outlet } from 'react-router-dom';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Outlet } from "react-router-dom";
 
 const themeConfig = {
   palette: {
     primary: {
-      main: '#732384',
+      main: "#732384",
     },
     secondary: {
-      main: '#fba91a',
+      main: "#fba91a",
     },
   },
 };

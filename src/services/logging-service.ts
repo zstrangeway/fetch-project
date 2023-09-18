@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Lame implementation of a logging service.
  * This is just a convenient way to selectively suppress debugging messages.
@@ -5,23 +6,26 @@
  */
 
 export enum AppStage {
-  Local = 'local',
-  Dev = 'dev',
-  PreProd = 'preprod',
-  Prod = 'prod',
+  Local = "local",
+  Dev = "dev",
+  PreProd = "preprod",
+  Prod = "prod",
 }
 
 export enum LogLevel {
-  Debug = 'DEBUG',
-  Info = 'INFO',
-  Error = 'ERROR',
+  Debug = "DEBUG",
+  Info = "INFO",
+  Error = "ERROR",
 }
 
 const appStage: AppStage = import.meta.env.VITE_APP_STAGE ?? AppStage.Prod;
-const debugMode = import.meta.env.VITE_DEBUG_MODE === 'true';
+const debugMode = import.meta.env.VITE_DEBUG_MODE === "true";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const log = (level: LogLevel, message?: any, ...optionalParams: any[]) => {
+export const log = (
+  level: LogLevel,
+  message?: any,
+  ...optionalParams: any[]
+) => {
   if (debugMode) {
     // eslint-disable-next-line no-console
     console.log(message, ...optionalParams);

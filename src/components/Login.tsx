@@ -1,11 +1,11 @@
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Grid from '@mui/material/Grid';
-import { useState } from 'react';
-import fetchLogoSvg from '../assets/fetch-logo.svg';
-import FetchTextField from './inputs/FetchTextField';
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import { useState } from "react";
+import fetchLogoSvg from "../assets/fetch-logo.svg";
+import FetchTextField from "./inputs/FetchTextField";
 
 interface LoginProps {
   loading: boolean;
@@ -16,8 +16,8 @@ const FORM_SPACING = 2;
 
 export default function Login(props: LoginProps) {
   const { loading, onLogin } = props;
-  const [name, setName] = useState('test'); // Adding default creds for convenience
-  const [email, setEmail] = useState('test@test.com'); // Adding default creds for convenience
+  const [name, setName] = useState("test"); // Adding default creds for convenience
+  const [email, setEmail] = useState("test@test.com"); // Adding default creds for convenience
 
   return (
     <Grid
@@ -25,7 +25,7 @@ export default function Login(props: LoginProps) {
       spacing={0}
       alignItems="center"
       justifyContent="center"
-      style={{ minHeight: '100vh' }}
+      style={{ minHeight: "100vh" }}
     >
       <Grid item sx={{ flexGrow: 1, maxWidth: 300 }}>
         <Card>
@@ -37,7 +37,11 @@ export default function Login(props: LoginProps) {
               alignItems="center"
             >
               <Grid item>
-                <img src={fetchLogoSvg} className="logo fetch" alt="Fetch logo" />
+                <img
+                  src={fetchLogoSvg}
+                  className="logo fetch"
+                  alt="Fetch logo"
+                />
               </Grid>
               <Grid item sx={{ width: 1 }}>
                 <FetchTextField
@@ -59,7 +63,9 @@ export default function Login(props: LoginProps) {
               </Grid>
             </Grid>
           </CardContent>
-          <CardActions sx={{ p: FORM_SPACING, pt: 0, flexDirection: 'row-reverse' }}>
+          <CardActions
+            sx={{ p: FORM_SPACING, pt: 0, flexDirection: "row-reverse" }}
+          >
             <Button
               color="primary"
               variant="contained"

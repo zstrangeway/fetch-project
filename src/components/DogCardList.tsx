@@ -1,12 +1,12 @@
-import LinearProgress from '@mui/material/LinearProgress';
-import Grid from '@mui/material/Grid';
-import Pagination from '@mui/material/Pagination';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { Stack } from '@mui/material';
-import DogCard from './DogCard';
-import { Dog } from '../types/Dog';
-import { Location } from '../services/fetch-api-service';
+import LinearProgress from "@mui/material/LinearProgress";
+import Grid from "@mui/material/Grid";
+import Pagination from "@mui/material/Pagination";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { Stack } from "@mui/material";
+import DogCard from "./DogCard";
+import { Dog } from "../types/Dog";
+import { Location } from "../services/fetch-api-service";
 
 interface DogCardListProps {
   dogs: Dog[];
@@ -35,36 +35,31 @@ export default function DogCardList(props: DogCardListProps) {
     selectedDogs,
   } = props;
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   if (loading) {
-    return (
-      <LinearProgress color="secondary" />
-    );
+    return <LinearProgress color="secondary" />;
   }
 
   return (
     <Stack alignItems="center">
       <Grid container spacing={SPACING}>
-        {
-          dogs.map((dog) => (
-            <DogCard
-              key={dog.id}
-              dog={dog}
-              onSelectToggled={onSelectToggled}
-              selected={selectedDogs.indexOf(dog.id) > -1}
-              locationMap={locationMap}
-              inputZip={inputZip}
-            />
-          ))
-        }
+        {dogs.map((dog) => (
+          <DogCard
+            key={dog.id}
+            dog={dog}
+            onSelectToggled={onSelectToggled}
+            selected={selectedDogs.indexOf(dog.id) > -1}
+            locationMap={locationMap}
+            inputZip={inputZip}
+          />
+        ))}
       </Grid>
-      { pageCount > 1
-        && (
+      {pageCount > 1 && (
         <Pagination
           sx={{ mt: SPACING * 2 }}
           color="primary"
-          size={isMobile ? 'small' : 'medium'}
+          size={isMobile ? "small" : "medium"}
           hidePrevButton={isMobile}
           hideNextButton={isMobile}
           count={pageCount}
@@ -73,7 +68,7 @@ export default function DogCardList(props: DogCardListProps) {
           onChange={onPageChange}
           page={page}
         />
-        )}
+      )}
     </Stack>
   );
 }

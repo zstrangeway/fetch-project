@@ -1,8 +1,8 @@
-import axios from 'axios';
-import * as LoggingService from './logging-service';
-import { LogLevel } from './logging-service';
+import axios from "axios";
+import * as LoggingService from "./logging-service";
+import { LogLevel } from "./logging-service";
 
-const SERVICE_NAME = 'FetchApiService';
+const SERVICE_NAME = "FetchApiService";
 const BASE_URL = import.meta.env.VITE_APP_API_URL;
 
 const httpClient = axios.create({
@@ -20,7 +20,7 @@ export interface LoginParams {
 
 export const login = async (params: LoginParams): Promise<void> => {
   try {
-    await httpClient.post('/auth/login', params);
+    await httpClient.post("/auth/login", params);
   } catch (error) {
     LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.login()`, error);
     throw error;
@@ -29,7 +29,7 @@ export const login = async (params: LoginParams): Promise<void> => {
 
 export const logout = async (): Promise<void> => {
   try {
-    await httpClient.post('/auth/logout');
+    await httpClient.post("/auth/logout");
   } catch (error) {
     LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.logout()`, error);
     throw error;
@@ -38,10 +38,14 @@ export const logout = async (): Promise<void> => {
 
 export const listDogBreeds = async (): Promise<string[]> => {
   try {
-    const response = await httpClient.get<string[]>('/dogs/breeds');
+    const response = await httpClient.get<string[]>("/dogs/breeds");
     return response.data;
   } catch (error) {
-    LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.listDogBreeds()`, error);
+    LoggingService.log(
+      LogLevel.Debug,
+      `${SERVICE_NAME}.listDogBreeds()`,
+      error,
+    );
     throw error;
   }
 };
@@ -71,14 +75,13 @@ interface Dog {
   breed: string;
 }
 
-export const searchDogs = async (params?: SearchParams): Promise<SearchDogsResponse> => {
+export const searchDogs = async (
+  params?: SearchParams,
+): Promise<SearchDogsResponse> => {
   try {
-    const response = await httpClient.get<SearchDogsResponse>(
-      '/dogs/search',
-      {
-        params,
-      },
-    );
+    const response = await httpClient.get<SearchDogsResponse>("/dogs/search", {
+      params,
+    });
     return response.data;
   } catch (error) {
     LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.searchDogs()`, error);
@@ -88,7 +91,7 @@ export const searchDogs = async (params?: SearchParams): Promise<SearchDogsRespo
 
 export const getDogs = async (params: string[]): Promise<Dog[]> => {
   try {
-    const response = await httpClient.post<Dog[]>('/dogs', params);
+    const response = await httpClient.post<Dog[]>("/dogs", params);
     return response.data;
   } catch (error) {
     LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.getDogs()`, error);
@@ -102,7 +105,10 @@ interface MatchDogsResponse {
 
 export const matchDogs = async (params: string[]): Promise<string> => {
   try {
-    const response = await httpClient.post<MatchDogsResponse>('/dogs/match', params);
+    const response = await httpClient.post<MatchDogsResponse>(
+      "/dogs/match",
+      params,
+    );
     return response.data.match;
   } catch (error) {
     LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.matchDogs()`, error);
@@ -121,7 +127,7 @@ export interface Location {
 
 export const getLocations = async (params: string[]): Promise<Location[]> => {
   try {
-    const response = await httpClient.post<Location[]>('/locations', params);
+    const response = await httpClient.post<Location[]>("/locations", params);
     return response.data;
   } catch (error) {
     LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.matchDogs()`, error);
@@ -154,7 +160,10 @@ export const searchLocations = async (
   params: SearchLocationsParams,
 ): Promise<SearchLocationsResponse> => {
   try {
-    const response = await httpClient.post<SearchLocationsResponse>('/locations/search', params);
+    const response = await httpClient.post<SearchLocationsResponse>(
+      "/locations/search",
+      params,
+    );
     return response.data;
   } catch (error) {
     LoggingService.log(LogLevel.Debug, `${SERVICE_NAME}.matchDogs()`, error);
