@@ -1,6 +1,6 @@
  # fetch-take-home
 
-This app was created with [Create React App](https://github.com/facebook/create-react-app).
+This app was created with [Vite](https://vitejs.dev/).
 
 The hosting infrastructure was created with AWS CDK.  It contains a Pipeline that observes my code repository and automatically deploys changes to three stages: dev, preprod and prod.  The react app itself is hosted in an s3 bucket behind a CloudFormation CDN.  This may be tricky to deploy on your own for the first time, but I have provided basic instructions in the "AWS Deployment" section if you wish to do so.
 
@@ -14,26 +14,27 @@ Site URLs:
 
 ### Instructions
 
-1. Update env vars in `.env.local` and `.env.aws.cdk`, see Environment Variable files section
+1. Update env vars in `.env.local`, see Environment Variable files section
 2. `npm i`
-3. `npm start`
+3. `npm run dev`
 
 ### Available Scripts
 
 In the project directory, you can run:
 
-#### `npm start`
+#### `npm run dev`
 
 Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Open [http://localhost:5173](http://localhost:5173) to view it in your browser.
 
 #### `npm test`
 
+(No tests are written yet)
 Launches the test runner in the interactive watch mode.
 
 #### `npm run build`
 
-Builds the app for production to the `build` folder.
+Builds the app for production to the `dist` folder.
 
 ## AWS Deployment
 
@@ -68,15 +69,18 @@ Builds the app for production to the `build` folder.
 `.env.local` (Required for local development)
 
 ```
-REACT_APP_STAGE=local
-REACT_APP_API_URL=https://frontend-take-home-service.fetch.com
+VITE_DEBUG_MODE=false
+VITE_APP_STAGE=local
+VITE_APP_API_URL=https://frontend-take-home-service.fetch.com
 ```
 
 `.env.aws-cdk` (Only required to deploy cdk pipeline)
 
 ```
-export REPO=zstrangeway/fetch-take-home
-export BRANCH=feature/FTH-02-add-hosting-infra
+export APP_NAME=fetch-project
+export REPO=zstrangeway/fetch-project
+export BRANCH=master
+export BASE_BUCKET_NAME=fetch-project
 
 export PIPELINE_ACCOUNT=<YOUR ACCOUNT NUMBER>
 export PIPELINE_REGION=us-west-1
@@ -94,18 +98,8 @@ export PROD_REGION=us-east-1
 export PROD_API_URL=https://frontend-take-home-service.fetch.com
 ```
 
-### TODO:
+## Thnigs to improve
 
-- Infra
-    - Hosting - done
-    - CICD
-        - Build - done
-        - Test
-            - Linting
-            - Unit
-            - UI
-        - Deploy - done
-            - Multiple stages - done
-            - Manual approval to prod - done
-        - Verify
-            - Post deployment UI tests
+- Needs tests
+- Should cache data rather than constantly repeating requests
+- Should display error messages to user when requests fail
