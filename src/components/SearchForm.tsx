@@ -32,9 +32,9 @@ export interface SearchFormProps {
 const FORM_SPACING = 1;
 const DISTANCE_OPTIONS = [
   { label: "Any", value: "0" },
-  { label: "25", value: "25" },
-  { label: "50", value: "50" },
-  { label: "100", value: "100" },
+  { label: "25 Miles", value: "25" },
+  { label: "50 Miles", value: "50" },
+  { label: "100 Miles", value: "100" },
 ];
 const SORT_BY_OPTIONS = [
   { label: "Breed", value: "breed" },
@@ -42,9 +42,9 @@ const SORT_BY_OPTIONS = [
   { label: "Name", value: "name" },
 ];
 const PAGE_SIZE_OPTIONS = [
-  { label: "24 Miles", value: 24 },
-  { label: "48 Miles", value: 48 },
-  { label: "96 Miles", value: 96 },
+  { label: "24", value: 24 },
+  { label: "48", value: 48 },
+  { label: "96", value: 96 },
 ];
 const SORT_ORDER_OPTIONS = [
   { label: "Ascending", value: "asc" },
