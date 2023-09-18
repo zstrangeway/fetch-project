@@ -143,11 +143,16 @@ export default function Root() {
       setLoginLoading(true);
       await FetchApiService.login({ name, email });
       setLoggedIn(true);
+
+      setListBreedsLoading(true);
+      const breedsData = await FetchApiService.listDogBreeds();
+      setBreeds(breedsData);
       handleSearch(defaultSarchInputs);
     } catch (e) {
       // TODO: Handle Error
       LoggingService.log(LogLevel.Error, "Root handleLogin failed", e);
     } finally {
+      setListBreedsLoading(false);
       setLoginLoading(false);
     }
   };
